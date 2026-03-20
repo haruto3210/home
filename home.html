@@ -3,46 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <title>Haruto Projects - ホーム</title>
-
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    /* ===============================
-       カラーテーマ（ライト / ダーク）
-    =============================== */
     :root {
-      --bg: #eef3f8;
-      --text: #222;
-      --card-bg: rgba(255,255,255,0.8);
-      --nav-bg: rgba(255,255,255,0.6);
-      --btn: #007bff;
-      --btn-hover: #0a84ff;
-    }
-
-    body.dark {
-      --bg: #0d1117;
       --text: #e6edf3;
-      --card-bg: rgba(22,27,34,0.8);
-      --nav-bg: rgba(22,27,34,0.6);
-      --btn: #238636;
-      --btn-hover: #2ea043;
+      --card-bg: rgba(0,0,0,0.45);
+      --nav-bg: rgba(0,0,0,0.35);
+      --btn: #00c3ff;
+      --btn-hover: #00e1ff;
     }
 
-    /* ===============================
-       全体デザイン
-    =============================== */
     body {
       margin: 0;
       font-family: "Segoe UI", sans-serif;
-      background: var(--bg) url('https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80') no-repeat center/cover;
       color: var(--text);
-      transition: 0.4s;
+      overflow-x: hidden;
     }
 
-    /* ===============================
-       ナビゲーションバー
-    =============================== */
+    /* ===== 背景 canvas ===== */
+    #cyberCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      background: black;
+    }
+
+    /* ===== ナビバー ===== */
     nav {
       position: fixed;
       top: 0;
@@ -65,7 +55,6 @@
     .logo {
       font-size: 22px;
       font-weight: bold;
-      color: var(--text);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -83,9 +72,13 @@
       color: var(--btn-hover);
     }
 
-    /* ===============================
-       メインコンテンツ
-    =============================== */
+    .toggle {
+      cursor: pointer;
+      font-size: 20px;
+      margin-left: 20px;
+    }
+
+    /* ===== メインカード ===== */
     .wrap {
       max-width: 900px;
       margin: 140px auto 0;
@@ -105,8 +98,7 @@
     h1 {
       font-size: 40px;
       margin-bottom: 20px;
-      color: var(--text);
-      text-shadow: 0 0 10px rgba(0,0,0,0.2);
+      text-shadow: 0 0 10px rgba(0,255,255,0.4);
     }
 
     .desc {
@@ -116,20 +108,17 @@
       white-space: pre-wrap;
     }
 
-    /* ===============================
-       ボタン
-    =============================== */
     .btn {
       display: inline-block;
       padding: 14px 28px;
       background: var(--btn);
-      color: white;
+      color: black;
       text-decoration: none;
       border-radius: 10px;
       font-size: 20px;
       font-weight: bold;
       transition: 0.25s;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,255,255,0.3);
     }
 
     .btn:hover {
@@ -137,9 +126,6 @@
       transform: scale(1.05);
     }
 
-    /* ===============================
-       GitHubリンク
-    =============================== */
     .github-link {
       display: inline-block;
       margin-top: 20px;
@@ -154,16 +140,6 @@
       color: var(--btn-hover);
     }
 
-    /* ===============================
-       ダークモードボタン
-    =============================== */
-    .toggle {
-      cursor: pointer;
-      font-size: 20px;
-      margin-left: 20px;
-    }
-
-    /* Google翻訳 */
     #google_translate_element {
       position: fixed;
       bottom: 20px;
@@ -174,9 +150,10 @@
 </head>
 <body>
 
-<!-- ===============================
-     ナビゲーションバー
-=============================== -->
+<!-- ===== サイバー背景 canvas ===== -->
+<canvas id="cyberCanvas"></canvas>
+
+<!-- ===== ナビバー ===== -->
 <nav>
   <div class="logo">
     <i class="fa-solid fa-cube"></i> Haruto Projects
@@ -190,9 +167,7 @@
   </div>
 </nav>
 
-<!-- ===============================
-     メインコンテンツ
-=============================== -->
+<!-- ===== メイン内容 ===== -->
 <div class="wrap">
   <h1>Haruto APP Download</h1>
 
@@ -218,24 +193,68 @@ OS制限（Windows 10 64bit 推奨）や利用規約は、ダウンロードペ�
 <div id="google_translate_element"></div>
 
 <script>
-  /* ダークモード */
-  function toggleDark() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+/* ===== サイバー背景アニメーション ===== */
+const canvas = document.getElementById("cyberCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let lines = [];
+
+class Line {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = 0;
+    this.speed = 2 + Math.random() * 4;
+    this.length = 50 + Math.random() * 150;
+    this.alpha = 0.2 + Math.random() * 0.5;
   }
 
-  if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
+  draw() {
+    ctx.strokeStyle = `rgba(0,255,255,${this.alpha})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.x, this.y + this.length);
+    ctx.stroke();
   }
 
-  /* Google翻訳 */
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'ja',
-      includedLanguages: 'ja,en,zh-CN,zh-TW,ko,fr,es,de,ru,ar',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
+  update() {
+    this.y += this.speed;
+    if (this.y > canvas.height) {
+      this.y = -this.length;
+      this.x = Math.random() * canvas.width;
+    }
   }
+}
+
+for (let i = 0; i < 80; i++) lines.push(new Line());
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  lines.forEach(l => { l.update(); l.draw(); });
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* ===== ダークモード ===== */
+function toggleDark() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+}
+
+if (localStorage.getItem("darkMode") === "true") {
+  document.body.classList.add("dark");
+}
+
+/* ===== Google翻訳 ===== */
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    includedLanguages: 'ja,en,zh-CN,zh-TW,ko,fr,es,de,ru,ar',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+  }, 'google_translate_element');
+}
 </script>
 
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
