@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
+  <defs>
+    <linearGradient id="cyber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff00ff"/>
+      <stop offset="25%" stop-color="#00ffff"/>
+      <stop offset="50%" stop-color="#00ff00"/>
+      <stop offset="75%" stop-color="#ffff00"/>
+      <stop offset="100%" stop-color="#ff0000"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="256" cy="256" r="256" fill="black"/>
+  <circle cx="256" cy="256" r="230" fill="url(#cyber)"/>
+
+  <text x="50%" y="58%" font-size="260" fill="white" font-family="Consolas, monospace" font-weight="bold" text-anchor="middle">
+    H
+  </text>
+</svg>
